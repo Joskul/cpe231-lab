@@ -26,6 +26,7 @@ public:
 
     void addEdge(string src, string dst, int w)
     {
+        // check if country names exist
         if (find(names.begin(), names.end(), src) == names.end())
         {
             names.push_back(src);
@@ -35,6 +36,7 @@ public:
             names.push_back(dst);
         }
 
+        // map country names to index
         int i = find(names.begin(), names.end(), src) - names.begin(),
             j = find(names.begin(), names.end(), dst) - names.begin();
         adj[i][j] = w;
