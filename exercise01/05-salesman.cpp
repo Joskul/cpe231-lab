@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 
-// #define DEBUG
+#define DEBUG
 
 using namespace std;
 
@@ -18,13 +18,11 @@ vector<int> range(int start, int end, int step = 1)
 
 class Graph
 {
-    int n;                   // number of vertices
     vector<vector<int>> adj; // adjacency matrix
-
-    vector<string> names; // map from country name to index
+    vector<string> names;    // map from country name to index
 
 public:
-    Graph(int n) : n(n), adj(n, vector<int>(n, INT_MIN)) {}
+    Graph(int n) : adj(n, vector<int>(n, INT_MIN)) {}
 
     void addEdge(string src, string dst, int w)
     {
@@ -57,7 +55,7 @@ public:
     {
         cost = INT_MIN;
         vector<int> longestCircuit;
-        vector<int> circuit = range(1, n - 1);
+        vector<int> circuit = range(1, adj.size() - 1);
 
         do
         {
@@ -92,19 +90,19 @@ public:
 #ifdef DEBUG
     void showEntries()
     {
-        for (auto it = index.begin(); it != index.end(); it++)
+        for (auto it = names.begin(); it != names.end(); it++)
         {
-            cout << it->first << " " << it->second << endl;
+            cout << it - names.begin() << " " << *it << endl;
         }
     }
 
     void showWeights()
     {
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < adj.size(); i++)
         {
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < adj.size(); j++)
             {
-                cout << getKey(index, i) << " " << getKey(index, j) << " " << adj[i][j] << " ";
+                cout << names[i] << " " << names[j] << " " << adj[i][j] << " ";
             }
             cout << endl;
         }
@@ -114,7 +112,7 @@ public:
     {
         for (int i = 0; i < circuit.size(); i++)
         {
-            cout << getKey(index, circuit[i]) << " ";
+            cout << names[circuit[i]] << " ";
         }
         cout << endl;
     }
