@@ -1,23 +1,10 @@
 #include <algorithm>
 #include <iostream>
-#include <map>
 #include <vector>
 
 // #define DEBUG
 
 using namespace std;
-
-string getKey(const map<string, int> &m, int v)
-{
-    for (auto it = m.begin(); it != m.end(); it++)
-    {
-        if (it->second == v)
-        {
-            return it->first;
-        }
-    }
-    return NULL;
-}
 
 vector<int> range(int start, int end, int step = 1)
 {
@@ -34,18 +21,24 @@ class Graph
     int n;                   // number of vertices
     vector<vector<int>> adj; // adjacency matrix
 
-    map<string, int> index; // map from country name to index
+    vector<string> names; // map from country name to index
 
 public:
     Graph(int n) : n(n), adj(n, vector<int>(n, INT_MIN)) {}
 
     void addEdge(string src, string dst, int w)
     {
-        index.find(src) == index.end() ? index[src] = index.size() : index[src];
-        index.find(dst) == index.end() ? index[dst] = index.size() : index[dst];
-        int i = index[src];
-        int j = index[dst];
+        if (find(names.begin(), names.end(), src) == names.end())
+        {
+            names.push_back(src);
+        }
+        if (find(names.begin(), names.end(), dst) == names.end())
+        {
+            names.push_back(dst);
+        }
 
+        int i = find(names.begin(), names.end(), src) - names.begin(),
+            j = find(names.begin(), names.end(), dst) - names.begin();
         adj[i][j] = w;
         adj[j][i] = w;
     }
@@ -90,7 +83,7 @@ public:
         vector<string> circuitString;
         for (int i = 0; i < longestCircuit.size(); i++)
         {
-            circuitString.push_back(getKey(index, longestCircuit[i]));
+            circuitString.push_back(names[longestCircuit[i]]);
         }
 
         return circuitString;
