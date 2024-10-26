@@ -10,19 +10,11 @@
 #include <locale.h>
 #endif
 
+#include "../utils/debug.hpp"
+
 // #define DIFF // use alternative method
 
 using namespace std;
-
-vector<int> range(int start, int end, int step = 1)
-{
-    vector<int> arr;
-    for (int i = start; i <= end; i += step)
-    {
-        arr.push_back(i);
-    }
-    return arr;
-}
 
 class Chunk
 {
@@ -93,36 +85,34 @@ public:
         }
     }
 
-#ifdef DEBUG
-    void visualize(const Landfill &diff) const
-    {
-        int maxHeight = max(*max_element(space.begin(), space.end()),
-                            *max_element(diff.space.begin(), diff.space.end()));
+    DB(
+        void visualize(const Landfill &diff) const {
+            int maxHeight = max(*max_element(space.begin(), space.end()),
+                                *max_element(diff.space.begin(), diff.space.end()));
 
-        for (int i = maxHeight; i > 0; i--)
-        {
-            for (int j = 0; j < space.size(); j++)
+            for (int i = maxHeight; i > 0; i--)
             {
-                if (space[j] >= i && diff.space[j] >= i)
+                for (int j = 0; j < space.size(); j++)
                 {
-                    // Overlap
-                    cout << "■";
-                }
-                else if (space[j] >= i)
-                {
-                    // Changes
-                    cout << "\033[34m■\033[0m"; // Blue for changes
-                }
-                else
-                {
+                    if (space[j] >= i && diff.space[j] >= i)
+                    {
+                        // Overlap
+                        cout << "■";
+                    }
+                    else if (space[j] >= i)
+                    {
+                        // Changes
+                        cout << "\033[34m■\033[0m"; // Blue for changes
+                    }
+                    else
+                    {
+                        cout << " ";
+                    }
                     cout << " ";
                 }
-                cout << " ";
+                cout << endl;
             }
-            cout << endl;
-        }
-    }
-#endif
+        })
 
 private:
 };
@@ -133,11 +123,10 @@ int minRoughness(Landfill &L)
     int k = pow(2, possibleSpace);
     int minRoughness = INT_MAX;
 
-#ifdef DEBUG
-    Landfill minRough(L);
-    int bestMinterm = 0;
-    cout << "k: " << k << endl;
-#endif
+    DB(
+        Landfill minRough(L);
+        int bestMinterm = 0;
+        cout << "k: " << k << endl;)
 
     for (int i = 0; i < k; i++)
     {
@@ -158,28 +147,25 @@ int minRoughness(Landfill &L)
         {
             minRoughness = currentRoughness;
         }
-#ifdef DEBUG
-        if (currentRoughness == minRoughness)
-        {
-            minRough = copy;
-            bestMinterm = i;
-        }
-        std::bitset<32> binary(i);
-        std::string binaryString = binary.to_string();
-        std::string result = binaryString.substr(32 - possibleSpace, possibleSpace);
+        DB(
+            if (currentRoughness == minRoughness) {
+                minRough = copy;
+                bestMinterm = i;
+            } std::bitset<32>
+                binary(i);
+            std::string binaryString = binary.to_string();
+            std::string result = binaryString.substr(32 - possibleSpace, possibleSpace);
 
-        cout << "Minterm: " << result << endl;
-        copy.visualize(L);
-        cout << "Roughness: " << currentRoughness << endl
-             << endl;
-#endif
+            cout << "Minterm: " << result << endl;
+            copy.visualize(L);
+            cout << "Roughness: " << currentRoughness << endl
+                 << endl;)
     }
 
-#ifdef DEBUG
-    cout << "Min Roughness: " << minRoughness << endl
-         << "Minterm: " << bestMinterm << endl;
-    minRough.visualize(L);
-#endif
+    DB(
+        cout << "Min Roughness: " << minRoughness << endl
+             << "Minterm: " << bestMinterm << endl;
+        minRough.visualize(L);)
 
     return minRoughness;
 }
@@ -349,9 +335,8 @@ int minRoughness(LandfillDiff &L)
 
 int main()
 {
-#ifdef DEBUG
-    setlocale(LC_ALL, "en_US.UTF-8");
-#endif
+    DB(
+        setlocale(LC_ALL, "en_US.UTF-8");)
     int n;         // Area length
     int l, m, r;   // left, middle, right height of a chunk
     vector<int> h; // Vector of heights
@@ -372,28 +357,28 @@ int main()
     // cout << minRoughness(L);
 
     // minterm testing
-    int minterm;
-    while (cin >> minterm)
-    {
-        int pos = 0;
-        Landfill copy(L);
-        do
-        {
-            copy.fill(minterm & 1 ? pos : -1);
-            minterm >>= 1;
-            pos++;
-        } while (minterm > 0);
-        copy.visualize(L);
-        cout << "Roughness: " << copy.roughness() << endl;
-    }
+    // int minterm;
+    // while (cin >> minterm)
+    // {
+    //     int pos = 0;
+    //     Landfill copy(L);
+    //     do
+    //     {
+    //         copy.fill(minterm & 1 ? pos : -1);
+    //         minterm >>= 1;
+    //         pos++;
+    //     } while (minterm > 0);
+    //     copy.visualize(L);
+    //     cout << "Roughness: " << copy.roughness() << endl;
+    // }
 
     // fill testing
-    // int pos = 0;
-    // Landfill fillCopy(L);
-    // while (cin >> pos)
-    // {
-    //     fillCopy.fill(pos);
-    //     fillCopy.visualize(L);
-    //     cout << "Roughness: " << fillCopy.roughness() << endl;
-    // }
+    int pos = 0;
+    Landfill fillCopy(L);
+    while (cin >> pos)
+    {
+        fillCopy.fill(pos);
+        fillCopy.visualize(L);
+        cout << "Roughness: " << fillCopy.roughness() << endl;
+    }
 }
