@@ -68,7 +68,7 @@ inline void mergeSort(std::vector<int> &arr, int left, int right)
     merge(arr, left, mid, right);
 }
 
-inline void mergeSort(std::vector<int> &arr)
+inline void mergeSortWrapper(std::vector<int> &arr)
 {
     mergeSort(arr, 0, arr.size() - 1);
 }

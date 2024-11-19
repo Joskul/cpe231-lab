@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/hikar/Workspace/cpe231-labs",
-      "program": "c:/Users/hikar/Workspace/cpe231-labs/build/Debug/outDebug",
+      "cwd": "c:/Users/hikar/Workspace/cpe231-lab/lab07",
+      "program": "c:/Users/hikar/Workspace/cpe231-lab/lab07/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
