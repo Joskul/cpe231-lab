@@ -1,20 +1,22 @@
 #pragma once
 #include <vector>
+// #include <algorithm> // For std::swap
 
-void swap(int &a, int &b)
+template <typename T>
+void swap(T &a, T &b)
 {
-    int t = a;
+    T t = a;
     a = b;
     b = t;
 }
 
-inline int lomutoPartition(std::vector<int> &arr, int low, int high)
+// Lomuto partition scheme
+inline std::size_t lomutoPartition(std::vector<int> &arr, std::size_t low, std::size_t high)
 {
     int pivot = arr[high];
+    std::size_t i = low - 1;
 
-    int i = low - 1;
-
-    for (int j = low; j <= high - 1; j++)
+    for (std::size_t j = low; j <= high - 1; j++)
     {
         if (arr[j] < pivot)
         {
@@ -22,57 +24,57 @@ inline int lomutoPartition(std::vector<int> &arr, int low, int high)
             swap(arr[i], arr[j]);
         }
     }
-
     swap(arr[i + 1], arr[high]);
-
     return i + 1;
 }
 
-inline int hoarePartition(std::vector<int> &arr, int low, int high)
+// Hoare partition scheme
+inline std::size_t hoarePartition(std::vector<int> &arr, std::size_t low, std::size_t high)
 {
     int pivot = arr[low];
-    int i = low - 1, j = high + 1;
+    std::size_t i = low - 1, j = high + 1;
 
     while (true)
     {
-
-        // Find leftmost element greater than or
-        // equal to pivot
         do
         {
             i++;
-        } while (arr[i] < pivot);
+        } while (arr[i] < pivot && i < high); // Ensure i does not exceed high
 
-        // Find rightmost element smaller than
-        // or equal to pivot
         do
         {
             j--;
-        } while (arr[j] > pivot);
+        } while (arr[j] > pivot && j > low); // Ensure j does not go below low
 
-        // If two pointers met.
         if (i >= j)
             return j;
 
-        swap(arr[i], arr[j]);
+        std::swap(arr[i], arr[j]);
     }
 }
 
 // Recursive QuickSort implementation
-inline void quickSort(std::vector<int> &arr, int low, int high, int (*partition)(std::vector<int> &, int, int) = lomutoPartition)
+inline void quickSort(std::vector<int> &arr, std::size_t low, std::size_t high, std::size_t (*partition)(std::vector<int> &, std::size_t, std::size_t) = lomutoPartition)
 {
     if (low < high)
     {
-        // Partition the array and get the index of the pivot
-        int pi = partition(arr, low, high);
+        std::size_t pi = partition(arr, low, high);
 
-        // Recursively sort elements before partition and after partition
-        quickSort(arr, low, pi - (partition == lomutoPartition), partition);
-        quickSort(arr, pi + 1, high, partition);
+        // Adjust recursion bounds based on partition scheme
+        if (partition == lomutoPartition)
+        {
+            quickSort(arr, low, pi - 1, partition);
+            quickSort(arr, pi + 1, high, partition);
+        }
+        else
+        { // hoarePartition
+            quickSort(arr, low, pi, partition);
+            quickSort(arr, pi + 1, high, partition);
+        }
     }
 }
 
-// Wrapper function to handle the quicksort
+// Wrapper functions
 inline void quickSortLomuto(std::vector<int> &arr)
 {
     if (!arr.empty())

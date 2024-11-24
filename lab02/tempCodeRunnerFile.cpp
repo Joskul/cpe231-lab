@@ -1,1 +1,0 @@
-*max_element(universe.begin(), universe.end())

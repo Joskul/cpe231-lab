@@ -25,40 +25,44 @@ inline std::vector<int> range(int start, int end, int step = 1)
     return arr;
 }
 
-inline std::vector<int> generateSortedArray(int size)
+#include <vector>
+#include <random>
+
+// Generates a sorted array of given size
+inline std::vector<int> generateSortedArray(std::size_t size)
 {
     std::vector<int> arr(size);
-    for (int i = 0; i < size; ++i)
+    for (std::size_t i = 0; i < size; ++i)
     {
-        arr[i] = i; // Sorted array
+        arr[i] = static_cast<int>(i); // Cast to int for array values
     }
-    DB(std::cout << "Generated array : "; printArray(arr);)
     return arr;
 }
 
-inline std::vector<int> generateReverseSortedArray(int size)
+// Generates a reverse-sorted array of given size
+inline std::vector<int> generateReverseSortedArray(std::size_t size)
 {
     std::vector<int> arr(size);
-    for (int i = 0; i < size; ++i)
+    for (std::size_t i = 0; i < size; ++i)
     {
-        arr[i] = size - i - 1; // Reverse sorted array
+        arr[i] = static_cast<int>(size - i - 1); // Cast to int for array values
     }
-    DB(std::cout << "Generated array : "; printArray(arr);)
     return arr;
 }
 
-inline std::vector<int> generateRandomArray(int size, int rMul = 10)
+// Generates a random array of given size
+inline std::vector<int> generateRandomArray(std::size_t size, int rMul = 10)
 {
     std::vector<int> arr(size);
     std::random_device rd;
     std::mt19937 eng(rd());
-    std::uniform_int_distribution<> distr(0, size * rMul); // Random numbers range
+    long long range = static_cast<long long>(size) * rMul; // Ensure no overflow
+    std::uniform_int_distribution<> distr(0, range > INT_MAX ? INT_MAX : static_cast<int>(range));
 
-    for (int i = 0; i < size; ++i)
+    for (std::size_t i = 0; i < size; ++i)
     {
         arr[i] = distr(eng); // Fill array with random numbers
     }
-    DB(std::cout << "Generated array : "; printArray(arr);)
     return arr;
 }
 
